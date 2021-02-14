@@ -5,8 +5,10 @@ const inputForm = document.getElementById('search');
 const searchBtn = document.getElementById('search-btn');
 const sliderBtn = document.getElementById('create-slider');
 const sliderContainer = document.getElementById('sliders');
+const spinner = document.getElementById('spinner');
+const imageCounter = document.getElementById('imageCounter');
 // selected image 
-let sliders = [];
+let sliders = []; 
 
 
 // If this key doesn't work
@@ -18,22 +20,37 @@ const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 const showImages = (images) => {
   imagesArea.style.display = 'block';
   gallery.innerHTML = '';
-  // show gallery title
-  galleryHeader.style.display = 'flex';
-  images.forEach(image => {
+
+  if(images === undefined || images.length == 0){
+    console.log("no img");
+    gallery.innerHTML = '<h3>No image found for this search. Try another';
+  }
+  else{
+    // show gallery title
+    galleryHeader.style.display = 'flex';
+    images.forEach(image => {
     let div = document.createElement('div');
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
   })
+  }
 
 }
 
+//toggle spinner
+const toggleSpinner = () => {
+  spinner.classList.toggle('d-none');
+}
+
+
 const getImages = (query) => {
+  toggleSpinner();
   fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
     .then(response => response.json())
     .then(data => showImages(data.hits))
     .catch(err => console.log(err))
+  toggleSpinner();
 }
 
 let slideIndex = 0;
@@ -49,7 +66,7 @@ const selectItem = (event, img) => {
       added = true;
     }
   });
-  console.log(added);
+
   if(added == true){
     sliders.push(img);
   } else{
@@ -57,6 +74,7 @@ const selectItem = (event, img) => {
       sliders.splice(item, 1);
     }
   }
+  imageCounter.innerText =  `Added Image: ${sliders.length}`
 }
 var timer
 const createSlider = () => {
@@ -79,7 +97,7 @@ const createSlider = () => {
   // hide image aria
   imagesArea.style.display = 'none';
   const time = document.getElementById('duration').value;
-  console.log(time);
+
   const duration =  Math.abs(parseInt(time)*1000 )|| 1000;
   sliders.forEach(slide => {
     let item = document.createElement('div')
@@ -145,3 +163,5 @@ inputForm.addEventListener("keyup", function(event) {
 sliderBtn.addEventListener('click', function () {
   createSlider()
 });
+
+console.log()

@@ -5,7 +5,7 @@ body{
   background-image: url("./images/mocha-grunge.png");
   font-family: 'Coustard', serif;
 }
-#sliders {
+#sliders { 
   height: 400px;
   width: 60%;
   overflow: hidden;
